@@ -1,0 +1,17 @@
+FROM ubuntu:20.04
+
+WORKDIR /
+EXPOSE 80
+RUN apt-get update -y
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y php php-mysql php-fpm php-xml php-mysql php-gd
+RUN apt-get install -y curl git wget apache2
+
+WORKDIR /etc/apache2
+RUN echo "Servername localhost" >> apache2.conf
+
+WORKDIR /var/www/html
+RUN git clone https://github.com/xpressengine/xe-core.git ./board
+RUN chmod 707 board -R
+RUN service apache2 start
+
+CMD [ "apachectl","-D","FOREGROUND" ]
